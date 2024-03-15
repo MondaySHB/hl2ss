@@ -11,7 +11,7 @@ import hl2ss_lnm
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Display marker state
 # Marks the FOV of the PV camera in the display

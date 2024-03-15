@@ -25,7 +25,7 @@ from mmdet.datasets import CocoPanopticDataset
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Calibration path (must exist but can be empty)
 calibration_path = '../calibration/'
@@ -42,8 +42,8 @@ buffer_length = 5
 max_depth = 2
 
 # MMDetection parameters
-config = 'C:/Users/jcds/Documents/GitHub/mmdetection/configs/mask2former/mask2former_swin-t-p4-w7-224_lsj_8x2_50e_coco-panoptic.py'
-checkpoint = 'C:/Users/jcds/Documents/GitHub/mmdetection/demo/mask2former_swin-t-p4-w7-224_lsj_8x2_50e_coco-panoptic_20220326_224553-fc567107.pth'
+config = 'C:/Git/ARProject/hl2ss/viewer/mask2former_swin-t-p4-w7-224_8xb2-lsj-50e_coco-panoptic.py'
+checkpoint = None
 device = 'cuda:0'
 score_thr = 0.3
 wait_time = 1

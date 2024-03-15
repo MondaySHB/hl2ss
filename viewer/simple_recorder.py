@@ -17,10 +17,10 @@ import hl2ss_utilities
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Output directory
-path = './data'
+path = './Defaultdata'
 
 # Unpack to viewable formats (e.g., encoded video to mp4)
 unpack = True
@@ -132,6 +132,7 @@ if __name__ == '__main__':
         writers[port].join()
 
     for port in ports:
+        print(port)
         producer.stop(port)
 
     # Stop PV Subsystem if PV is selected -------------------------------------

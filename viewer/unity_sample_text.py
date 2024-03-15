@@ -13,7 +13,7 @@ import hl2ss_rus
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Position in world space (x, y, z) in meters
 position = [0, 0, 1]
@@ -22,7 +22,7 @@ position = [0, 0, 1]
 rotation = [0, 0, 0, 1]
 
 # Text
-text = 'Hello from Python!'
+text = 'IDIM Text Streaming'
 
 # Font size
 font_size = 0.4

@@ -14,7 +14,7 @@ import hl2ss_rus
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Position in camera space (x, y, z)
 position = [0,0, 0.5]
@@ -23,10 +23,10 @@ position = [0,0, 0.5]
 rotation = [0, 0, 0, 1]
 
 # Scale (x, y, z) in meters
-scale = [0.05, 0.05, 1]
+scale = [0.2, 0.1, 1]
 
 # Texture file (must be jpg or png)
-texture_file = 'texture.jpg'
+texture_file = 'IDIM.png'
 
 #------------------------------------------------------------------------------
 

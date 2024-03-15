@@ -21,7 +21,7 @@ import hl2ss_rus
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = '192.168.1.7'
+host = '192.168.0.116'
 
 # Calibration folder (must exist but can be empty)
 calibration_path = '../calibration'
@@ -30,7 +30,7 @@ calibration_path = '../calibration'
 scale = [0.2, 0.2, 1]
 
 # Texture file (must be jpg or png)
-texture_file = 'texture.jpg'
+texture_file = 'IDIM.png'
 
 # Scaling factor for visibility
 brightness = 8

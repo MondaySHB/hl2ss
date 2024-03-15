@@ -18,7 +18,7 @@ import threading
 # Settings --------------------------------------------------------------------
 
 # HoloLens address
-host = "192.168.1.7"
+host = "192.168.0.116"
 
 # Audio encoding profile
 profile = hl2ss.AudioProfile.AAC_24000
