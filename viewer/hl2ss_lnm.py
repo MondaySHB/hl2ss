@@ -64,14 +64,16 @@ def get_sync_period(rx):
         return 1
     if (rx.port == hl2ss.StreamPort.EXTENDED_EYE_TRACKER):
         return 1
+    if (rx.port == hl2ss.StreamPort.EXTENDED_AUDIO):
+        return 1
 
 
 #------------------------------------------------------------------------------
 # Control
 #------------------------------------------------------------------------------
 
-def start_subsystem_pv(host, port):
-    hl2ss.start_subsystem_pv(host, port)
+def start_subsystem_pv(host, port, enable_mrc=False, hologram_composition=True, recording_indicator=False, video_stabilization=False, blank_protected=False, show_mesh=False, shared=False, global_opacity=0.9, output_width=0.0, output_height=0.0, video_stabilization_length=0, hologram_perspective=hl2ss.HologramPerspective.PV):
+    hl2ss.start_subsystem_pv(host, port, enable_mrc, hologram_composition, recording_indicator, video_stabilization, blank_protected, show_mesh, shared, global_opacity, output_width, output_height, video_stabilization_length, hologram_perspective)
 
 
 def stop_subsystem_pv(host, port):
@@ -132,6 +134,10 @@ def rx_eet(host, port, chunk=hl2ss.ChunkSize.EXTENDED_EYE_TRACKER, fps=30):
     return hl2ss.rx_eet(host, port, chunk, fps)
 
 
+def rx_extended_audio(host, port, chunk=hl2ss.ChunkSize.EXTENDED_AUDIO, mixer_mode=hl2ss.MixerMode.BOTH, loopback_gain=1.0, microphone_gain=1.0, profile=hl2ss.AudioProfile.AAC_24000, level=hl2ss.AACLevel.L2, decoded=True):
+    return hl2ss.rx_decoded_extended_audio(host, port, chunk, mixer_mode, loopback_gain, microphone_gain, profile, level) if (decoded) else hl2ss.rx_extended_audio(host, port, chunk, mixer_mode, loopback_gain, microphone_gain, profile, level)
+
+
 #------------------------------------------------------------------------------
 # Mode 2
 #------------------------------------------------------------------------------
@@ -154,6 +160,14 @@ def download_calibration_rm_imu(host, port):
 
 def download_calibration_pv(host, port, width, height, framerate):
     return hl2ss.download_calibration_pv(host, port, width, height, framerate)
+
+
+def download_devicelist_extended_audio(host, port):
+    return hl2ss.download_devicelist_extended_audio(host, port)
+
+
+def download_devicelist_extended_video(host, port):
+    return hl2ss.download_devicelist_extended_video(host, port)
 
 
 #------------------------------------------------------------------------------

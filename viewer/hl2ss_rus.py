@@ -21,7 +21,7 @@ class TargetMode:
 
 # Object Active State
 class ActiveState:
-    Inactive = 0,
+    Inactive = 0
     Active = 1
 
 
@@ -54,8 +54,11 @@ class command_buffer(hl2ss.umq_command_buffer):
     def set_text(self, key, font_size, rgba, string):
         self.add(7, struct.pack('<Ifffff', key, font_size, rgba[0], rgba[1], rgba[2], rgba[3]) + string.encode('utf-8'))
 
+    def say(self, text):
+        self.add(8, text.encode('utf-8'))
+
     def load_mesh(self, data):
-        self.add(8, data)
+        self.add(15, data)
 
     def remove(self, key):
         self.add(16, struct.pack('<I', key))

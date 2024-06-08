@@ -8,6 +8,7 @@
 #include "ports.h"
 #include "timestamps.h"
 #include "ipc_sc.h"
+#include "research_mode.h"
 
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Media.Capture.h>
@@ -46,6 +47,7 @@ static uint32_t g_divisor = 1;
 // Mode: 2
 static HANDLE g_event_intrinsic = NULL; // alias
 static float g_intrinsics[2 + 2 + 3 + 2 + 16];
+static float4x4 g_extrinsics;
 
 //-----------------------------------------------------------------------------
 // Functions
@@ -134,6 +136,8 @@ static void PV_OnVideoFrameArrived_Intrinsics(MediaFrameReader const& sender, Me
     memcpy(&g_intrinsics[4], &r, sizeof(r));
     memcpy(&g_intrinsics[7], &t, sizeof(t));
     memcpy(&g_intrinsics[9], &p, sizeof(p));
+
+    g_extrinsics = Locator_Locate(QPCTimestampToPerceptionTimestamp(frame.SystemRelativeTime().Value().count()), ResearchMode_GetLocator(), frame.CoordinateSystem());
 
     SetEvent(g_event_intrinsic);
 }
@@ -224,7 +228,7 @@ void PV_Stream(SOCKET clientsocket, HANDLE clientevent, MediaFrameReader const& 
 // OK
 static void PV_Intrinsics(SOCKET clientsocket, HANDLE clientevent, MediaFrameReader const& reader)
 {
-    WSABUF wsaBuf[1];
+    WSABUF wsaBuf[2];
 
     g_event_intrinsic = clientevent;
 
@@ -234,7 +238,8 @@ static void PV_Intrinsics(SOCKET clientsocket, HANDLE clientevent, MediaFrameRea
     WaitForSingleObject(g_event_intrinsic, INFINITE);
     reader.StopAsync().get();
 
-    pack_buffer(wsaBuf, 0, g_intrinsics, sizeof(g_intrinsics));
+    pack_buffer(wsaBuf, 0,  g_intrinsics, sizeof(g_intrinsics));
+    pack_buffer(wsaBuf, 1, &g_extrinsics, sizeof(g_extrinsics));
 
     send_multiple(clientsocket, wsaBuf, sizeof(wsaBuf) / sizeof(WSABUF));
 }
@@ -251,17 +256,26 @@ static void PV_Stream(SOCKET clientsocket)
     ok = recv_u8(clientsocket, mode);
     if (!ok) { return; }
 
-    if (!PersonalVideo_Status() && (mode & 4)) { PersonalVideo_Open(); }
-    if (!PersonalVideo_Status()) { return; }
-    
     ok = ReceiveH26xFormat_Video(clientsocket, format);
     if (!ok) { return; }
+
+    if (mode & 4)
+    {
+    MRCVideoOptions options;
+    ok = ReceiveMRCVideoOptions(clientsocket, options);
+    if (!ok) { return; }
+    if (PersonalVideo_Status()) { PersonalVideo_Close(); }
+    PersonalVideo_Open(options);
+    }
+
+    if (!PersonalVideo_Status()) { return; }
 
     ok = PersonalVideo_SetFormat(format.width, format.height, format.framerate);
     if (!ok) { return; }
     
     clientevent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
+    PersonalVideo_RegisterEvent(clientevent);
     videoFrameReader = PersonalVideo_CreateFrameReader();
     videoFrameReader.AcquisitionMode(MediaFrameReaderAcquisitionMode::Buffered);
 
@@ -273,6 +287,7 @@ static void PV_Stream(SOCKET clientsocket)
     }
 
     videoFrameReader.Close();
+    PersonalVideo_RegisterEvent(NULL);
 
     CloseHandle(clientevent);
 

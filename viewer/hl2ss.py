@@ -21,6 +21,8 @@ class StreamPort:
     MICROPHONE           = 3811
     SPATIAL_INPUT        = 3812
     EXTENDED_EYE_TRACKER = 3817
+    EXTENDED_AUDIO       = 3818
+    EXTENDED_VIDEO       = 3819
 
 
 # IPC TCP Ports
@@ -42,6 +44,7 @@ class ChunkSize:
     MICROPHONE           = 512
     SPATIAL_INPUT        = 1024
     EXTENDED_EYE_TRACKER = 256
+    EXTENDED_AUDIO       = 512
     SINGLE_TRANSFER      = 4096
 
 
@@ -161,6 +164,18 @@ class PNGFilterMode:
     ADAPTIVE  = 6
 
 
+class HologramPerspective:
+    DISPLAY = 0
+    PV      = 1
+
+
+class MixerMode:
+    MICROPHONE = 0
+    SYSTEM     = 1
+    BOTH       = 2
+    QUERY      = 0x80000000
+
+
 # RM VLC Parameters
 class Parameters_RM_VLC:
     WIDTH  = 640
@@ -208,7 +223,14 @@ class Parameters_RM_IMU_MAGNETOMETER:
 
 # Microphone Parameters
 class Parameters_MICROPHONE:
-    SAMPLE_RATE   = 48000
+    ARRAY_CHANNELS     = 5
+    ARRAY_TOP_LEFT     = 0
+    ARRAY_TOP_CENTER   = 1
+    ARRAY_TOP_RIGHT    = 2
+    ARRAY_BOTTOM_LEFT  = 3
+    ARRAY_BOTTOM_RIGHT = 4
+
+    SAMPLE_RATE    = 48000
     CHANNELS       = 2
     PERIOD         = 1 / SAMPLE_RATE
     GROUP_SIZE_RAW = 768
@@ -440,7 +462,15 @@ def _create_configuration_for_h26x_encoding(options):
     for key, value in options.items():
         configuration.extend(struct.pack('<QQ', key, value))
     return bytes(configuration)
-    
+
+
+def _create_configuration_for_mrc_video(enable, hologram_composition, recording_indicator, video_stabilization, blank_protected, show_mesh, shared, global_opacity, output_width, output_height, video_stabilization_length, hologram_perspective):
+    return struct.pack('<BBBBBBBfffII', 1 if (enable) else 0, 1 if (hologram_composition) else 0, 1 if (recording_indicator) else 0, 1 if (video_stabilization) else 0, 1 if (blank_protected) else 0, 1 if (show_mesh) else 0, 1 if (shared) else 0, global_opacity, output_width, output_height, video_stabilization_length, hologram_perspective)
+
+
+def _create_configuration_for_mrc_audio(mixer_mode, loopback_gain, microphone_gain):
+    return struct.pack('<Iff', mixer_mode, loopback_gain, microphone_gain)
+
 
 def _create_configuration_for_rm_vlc(mode, divisor, profile, level, bitrate, options):
     configuration = bytearray()
@@ -491,6 +521,13 @@ def _create_configuration_for_eet(fps):
     return struct.pack('<B', fps)
 
 
+def _create_configuration_for_extended_audio(mixer_mode, loopback_gain, microphone_gain, profile, level):
+    configuration = bytearray()
+    configuration.extend(_create_configuration_for_mrc_audio(mixer_mode, loopback_gain, microphone_gain))
+    configuration.extend(_create_configuration_for_audio_encoding(profile, level))
+    return bytes(configuration)
+
+
 def _create_configuration_for_rm_mode2(mode):
     return _create_configuration_for_mode(mode)
 
@@ -500,6 +537,11 @@ def _create_configuration_for_pv_mode2(mode, width, height, framerate):
     configuration.extend(_create_configuration_for_mode(mode))
     configuration.extend(_create_configuration_for_video_format(width, height, framerate))
     return bytes(configuration)
+
+
+def extended_audio_device_mixer_mode(mixer_mode, device):
+    DEVICE_BASE = 0x00000004
+    return mixer_mode | (DEVICE_BASE * (device + 1))
 
 
 #------------------------------------------------------------------------------
@@ -561,16 +603,24 @@ def _connect_client_eet(host, port, chunk_size, fps):
     return c
 
 
+def _connect_client_extended_audio(host, port, chunk_size, mixer_mode, loopback_gain, microphone_gain, profile, level):
+    c = _gatherer()
+    c.open(host, port, chunk_size, StreamMode.MODE_0)
+    c.sendall(_create_configuration_for_extended_audio(mixer_mode, loopback_gain, microphone_gain, profile, level))
+    return c
+
+
 class _PVCNT:
     START =  0x04
     STOP   = 0x08
     MODE_3 = 0x03
 
 
-def start_subsystem_pv(host, port):
+def start_subsystem_pv(host, port, enable_mrc, hologram_composition, recording_indicator, video_stabilization, blank_protected, show_mesh, shared, global_opacity, output_width, output_height, video_stabilization_length, hologram_perspective):
     c = _client()
     c.open(host, port)
     c.sendall(_create_configuration_for_pv_mode2(_PVCNT.START | _PVCNT.MODE_3, 1920, 1080, 30))
+    c.sendall(_create_configuration_for_mrc_video(enable_mrc, hologram_composition, recording_indicator, video_stabilization, blank_protected, show_mesh, shared, global_opacity, output_width, output_height, video_stabilization_length, hologram_perspective))
     c.close()
 
 
@@ -747,6 +797,27 @@ class rx_eet(_context_manager):
 
     def open(self):
         self._client = _connect_client_eet(self.host, self.port, self.chunk, self.fps)
+
+    def get_next_packet(self):
+        return self._client.get_next_packet()
+    
+    def close(self):
+        self._client.close()
+
+
+class rx_extended_audio:
+    def __init__(self, host, port, chunk, mixer_mode, loopback_gain, microphone_gain, profile, level):
+        self.host = host
+        self.port = port
+        self.chunk = chunk
+        self.mixer_mode = mixer_mode
+        self.loopback_gain = loopback_gain
+        self.microphone_gain = microphone_gain
+        self.profile = profile
+        self.level = level
+
+    def open(self):
+        self._client = _connect_client_extended_audio(self.host, self.port, self.chunk, self.mixer_mode, self.loopback_gain, self.microphone_gain, self.profile, self.level)
 
     def get_next_packet(self):
         return self._client.get_next_packet()
@@ -1043,13 +1114,27 @@ class _unpack_pv:
         'nv12'  : None
     }
 
+    _resolution = {
+        get_video_stride(1952)*1100 : (1952, 1100, get_video_stride(1952)),
+        get_video_stride(1504)*846  : (1504,  846, get_video_stride(1504)),
+        get_video_stride(1920)*1080 : (1920, 1080, get_video_stride(1920)),
+        get_video_stride(1280)*720  : (1280,  720, get_video_stride(1280)),
+        get_video_stride(640)*360   : ( 640,  360, get_video_stride( 640)),
+        get_video_stride(760)*428   : ( 760,  428, get_video_stride( 760)),
+        get_video_stride(960)*540   : ( 960,  540, get_video_stride( 960)),
+        get_video_stride(1128)*636  : (1128,  636, get_video_stride(1128)),
+        get_video_stride(424)*240   : ( 424,  240, get_video_stride( 424)),
+        get_video_stride(500)*282   : ( 500,  282, get_video_stride( 500))
+    }
+
     def create(self, width, height):
         self.width = width
         self.height = height
         self.stride = get_video_stride(width)
 
     def decode(self, payload, format):
-        image = np.frombuffer(payload, dtype=np.uint8).reshape((int(self.height*3/2), self.stride))[:, :self.width]
+        width, height, stride = _unpack_pv._resolution[(len(payload) * 2) // 3]
+        image = np.frombuffer(payload, dtype=np.uint8).reshape(((height*3) //2, stride))[:, :width]
         sf = _unpack_pv._cv2_nv12_format[format]
         return image if (sf is None) else cv2.cvtColor(image, sf)
 
@@ -1077,15 +1162,18 @@ class _decode_microphone:
 
 
 class _unpack_microphone:
+    def __init__(self, level):
+        self.level = level
+
     def create(self):
-        pass
+        self.dtype = np.float32 if (self.level == AACLevel.L5) else np.int16
 
     def decode(self, payload):
-        return np.frombuffer(payload, dtype=np.int16).reshape((1, -1))
+        return np.frombuffer(payload, dtype=self.dtype).reshape((1, -1))
 
 
-def decode_microphone(profile):
-    return _unpack_microphone() if (profile == AudioProfile.RAW) else _decode_microphone(profile)
+def decode_microphone(profile, level):
+    return _unpack_microphone(level) if (profile == AudioProfile.RAW) else _decode_microphone(profile)
 
 
 #------------------------------------------------------------------------------
@@ -1164,7 +1252,7 @@ class _Mode0Layout_SI_Hand:
 
 class _Mode0Layout_SI:
     BEGIN_VALID         = 0
-    END_VALID           = BEGIN_VALID + 1
+    END_VALID           = BEGIN_VALID + 1*_SIZEOF.DWORD
     BEGIN_HEAD_POSITION = END_VALID
     END_HEAD_POSITION   = BEGIN_HEAD_POSITION + 3*_SIZEOF.FLOAT
     BEGIN_HEAD_FORWARD  = END_HEAD_POSITION
@@ -1201,7 +1289,7 @@ class _SI_Hand:
 class unpack_si:
     def __init__(self, payload):
         self._data = payload
-        self._valid = np.frombuffer(payload[_Mode0Layout_SI.BEGIN_VALID : _Mode0Layout_SI.END_VALID], dtype=np.uint8)
+        self._valid = np.frombuffer(payload[_Mode0Layout_SI.BEGIN_VALID : _Mode0Layout_SI.END_VALID], dtype=np.uint32)
 
     def is_valid_head_pose(self):
         return (self._valid & _SI_Field.HEAD) != 0
@@ -1343,7 +1431,25 @@ class rx_decoded_pv(rx_pv):
 class rx_decoded_microphone(rx_microphone):
     def __init__(self, host, port, chunk, profile, level):
         super().__init__(host, port, chunk, profile, level)
-        self._codec = decode_microphone(profile)
+        self._codec = decode_microphone(profile, level)
+        
+    def open(self):
+        self._codec.create()
+        super().open()
+
+    def get_next_packet(self):
+        data = super().get_next_packet()
+        data.payload = self._codec.decode(data.payload)
+        return data
+
+    def close(self):
+        super().close()
+
+
+class rx_decoded_extended_audio(rx_extended_audio):
+    def __init__(self, host, port, chunk, mixer_mode, loopback_gain, microphone_gain, profile, level):
+        super().__init__(host, port, chunk, mixer_mode, loopback_gain, microphone_gain, profile, level)
+        self._codec = decode_microphone(profile, None)
         
     def open(self):
         self._codec.create()
@@ -1433,7 +1539,9 @@ class _Mode2Layout_PV:
     END_TANGENTIALDISTORTION   = BEGIN_TANGENTIALDISTORTION + 2
     BEGIN_PROJECTION           = END_TANGENTIALDISTORTION
     END_PROJECTION             = BEGIN_PROJECTION + 16
-    FLOAT_COUNT                = 2 + 2 + 3 + 2 + 16
+    BEGIN_EXTRINSICS           = END_PROJECTION
+    END_EXTRINSICS             = BEGIN_EXTRINSICS + 16
+    FLOAT_COUNT                = 2 + 2 + 3 + 2 + 16 + 16
 
 
 class _Mode2_RM_VLC:
@@ -1469,13 +1577,14 @@ class _Mode2_RM_IMU:
 
 
 class _Mode2_PV:
-    def __init__(self, focal_length, principal_point, radial_distortion, tangential_distortion, projection, intrinsics):
+    def __init__(self, focal_length, principal_point, radial_distortion, tangential_distortion, projection, intrinsics, extrinsics):
         self.focal_length          = focal_length
         self.principal_point       = principal_point
         self.radial_distortion     = radial_distortion
         self.tangential_distortion = tangential_distortion
         self.projection            = projection
         self.intrinsics            = intrinsics
+        self.extrinsics            = extrinsics
 
 
 def _download_mode2_data(host, port, configuration, bytes):
@@ -1558,10 +1667,31 @@ def download_calibration_pv(host, port, width, height, framerate):
     radial_distortion     = floats[_Mode2Layout_PV.BEGIN_RADIALDISTORTION     : _Mode2Layout_PV.END_RADIALDISTORTION    ]
     tangential_distortion = floats[_Mode2Layout_PV.BEGIN_TANGENTIALDISTORTION : _Mode2Layout_PV.END_TANGENTIALDISTORTION]
     projection            = floats[_Mode2Layout_PV.BEGIN_PROJECTION           : _Mode2Layout_PV.END_PROJECTION          ].reshape((4, 4))
+    extrinsics            = floats[_Mode2Layout_PV.BEGIN_EXTRINSICS           : _Mode2Layout_PV.END_EXTRINSICS          ].reshape((4, 4))
 
     intrinsics = np.array([[-focal_length[0], 0, 0, 0], [0, focal_length[1], 0, 0], [principal_point[0], principal_point[1], 1, 0], [0, 0, 0, 1]], dtype=np.float32)
 
-    return _Mode2_PV(focal_length, principal_point, radial_distortion, tangential_distortion, projection, intrinsics)
+    return _Mode2_PV(focal_length, principal_point, radial_distortion, tangential_distortion, projection, intrinsics, extrinsics)
+
+
+def download_devicelist_extended_audio(host, port):
+    c = _client()
+    c.open(host, port)
+    c.sendall(_create_configuration_for_extended_audio(MixerMode.QUERY, 1.0, 1.0, AudioProfile.AAC_24000, AACLevel.L2))
+    size = struct.unpack('<I', c.download(_SIZEOF.DWORD, ChunkSize.SINGLE_TRANSFER))[0]
+    query = c.download(size, ChunkSize.SINGLE_TRANSFER).decode('utf-16')
+    c.close()
+    return query
+
+
+def download_devicelist_extended_video(host, port):
+    c = _client()
+    c.open(host, port)
+    c.sendall(_create_configuration_for_pv_mode2(StreamMode.MODE_2, 1920, 1080, 30))
+    size = struct.unpack('<I', c.download(_SIZEOF.DWORD, ChunkSize.SINGLE_TRANSFER))[0]
+    query = c.download(size, ChunkSize.SINGLE_TRANSFER).decode('utf-16')
+    c.close()
+    return query
 
 
 #------------------------------------------------------------------------------
@@ -1588,15 +1718,12 @@ class _PortName:
         'voice_input',
         'unity_message_queue',
         'extended_eye_tracker',
+        'extended_audio',
     ]
 
 
-def get_port_index(port):
-    return port - StreamPort.RM_VLC_LEFTFRONT
-
-
 def get_port_name(port):
-    return _PortName.OF[get_port_index(port)]
+    return _PortName.OF[port - StreamPort.RM_VLC_LEFTFRONT]
 
 
 #------------------------------------------------------------------------------
@@ -1716,6 +1843,7 @@ class ipc_rc(_context_manager):
     _CMD_SET_PV_ISO_SPEED = 0x0A
     _CMD_SET_PV_BACKLIGHT_COMPENSATION = 0x0B
     _CMD_SET_PV_SCENE_MODE = 0x0C
+    _CMD_SET_FLAT_MODE = 0x0D
 
     def __init__(self, host, port):
         self.host = host
@@ -1789,6 +1917,10 @@ class ipc_rc(_context_manager):
 
     def set_pv_scene_mode(self, mode):
         command = struct.pack('<BI', ipc_rc._CMD_SET_PV_SCENE_MODE, mode)
+        self._client.sendall(command)
+
+    def set_flat_mode(self, mode):
+        command = struct.pack('<BI', ipc_rc._CMD_SET_FLAT_MODE, mode)
         self._client.sendall(command)
 
 
@@ -2053,7 +2185,7 @@ class _su_item:
         self.orientation = np.frombuffer(self.orientation, dtype=np.float32)
         self.position = np.frombuffer(self.position, dtype=np.float32)
         self.location = np.frombuffer(self.location, dtype=np.float32).reshape((-1, 4))
-        self.alignment = np.frombuffer(self.alignment, np.int32)
+        self.alignment = np.frombuffer(self.alignment, dtype=np.int32)
         self.extents = np.frombuffer(self.extents, dtype=np.float32)
 
 

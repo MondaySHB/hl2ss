@@ -1,14 +1,16 @@
 
 #pragma once
 
+#include "custom_video_effect.h"
 #include <winrt/Windows.Media.Capture.Frames.h>
 
 void PersonalVideo_Initialize();
 void PersonalVideo_Cleanup();
-void PersonalVideo_Open();
+void PersonalVideo_RegisterEvent(HANDLE h);
+void PersonalVideo_Open(MRCVideoOptions const& options);
 void PersonalVideo_Close();
 bool PersonalVideo_Status();
-bool PersonalVideo_SetFormat(uint32_t width, uint32_t height, uint32_t framerate);
+bool PersonalVideo_SetFormat(uint16_t& width, uint16_t& height, uint8_t& framerate);
 winrt::Windows::Media::Capture::Frames::MediaFrameReader PersonalVideo_CreateFrameReader();
 
 void PersonalVideo_SetFocus(uint32_t focusmode, uint32_t autofocusrange, uint32_t distance, uint32_t value, uint32_t disabledriverfallback);

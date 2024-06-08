@@ -19,6 +19,9 @@
 #include "voice_input.h"
 #include "ipc_vi.h"
 #include "stream_eet.h"
+#include "stream_ea.h"
+#include "extended_execution.h"
+#include "stream_ev.h"
 
 #include <winrt/Windows.ApplicationModel.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
@@ -32,6 +35,7 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 {
 	bool m_windowClosed = false;
 	bool m_init = false;
+	bool m_flat = false;
 
 	IFrameworkView CreateView()
 	{
@@ -45,7 +49,7 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 
 		CoreApplication::Exit(); // Suspending is not supported
 	}
-	
+
 	void Initialize(CoreApplicationView const &applicationView)
 	{
 		(void)applicationView;
@@ -54,6 +58,8 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 
 		InitializeSockets();
 		MFStartup(MF_VERSION);
+
+		m_flat = ExtendedExecution_GetFlatMode();
 	}
 
 	void Load(winrt::hstring const&)
@@ -70,7 +76,11 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 
 		if (m_init) { return; }
 
+		if (!m_flat)
+		{
 		HolographicSpace_Initialize();
+		}
+
 		Locator_Initialize();
 		ResearchMode_Initialize();
 		SpatialInput_Initialize();
@@ -87,9 +97,12 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 		SM_Initialize();
 		SU_Initialize();
 		VI_Initialize();
-
 		EET_Initialize();
+		EA_Initialize();
+		EV_Initialize();
 
+		ExtendedExecution_Request();
+		
 		m_init = true;
 	}
 
@@ -102,11 +115,16 @@ struct App : winrt::implements<App, IFrameworkViewSource, IFrameworkView>
 		{
 		window.Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
+		if (!m_flat)
+		{
 		HolographicSpace_Update();
 		HolographicSpace_Clear();
 		// Draw
 		HolographicSpace_Present();
 		}
+		}
+
+		CoreApplication::Exit();
 	}
 
 	void OnWindowClosed(CoreWindow const& sender, CoreWindowEventArgs const& args)

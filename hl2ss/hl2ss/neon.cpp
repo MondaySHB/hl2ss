@@ -107,3 +107,111 @@ void Neon_ZLTToBGRA8(u8 const* pSigma, u16 const* pDepth, u16 const* pAb, u32* p
 
 	memcpy(pBGRA8, pAb, RM_ZLT_ABSIZE);
 }
+
+// OK
+void Neon_F32ToS16(float const* in, int32_t elements, s16* out)
+{
+	float32x4_t s = vdupq_n_f32(32767.0f);
+
+	for (int i = 0; i < (elements / 16); ++i)
+	{
+	float32x4x4_t f = vld1q_f32_x4(in);
+	uint16x4x4_t d;
+
+	d.val[0] = vmovn_s32(vcvtq_s32_f32(vmulq_f32(f.val[0], s)));
+	d.val[1] = vmovn_s32(vcvtq_s32_f32(vmulq_f32(f.val[1], s)));
+	d.val[2] = vmovn_s32(vcvtq_s32_f32(vmulq_f32(f.val[2], s)));
+	d.val[3] = vmovn_s32(vcvtq_s32_f32(vmulq_f32(f.val[3], s)));
+
+	vst1_u16_x4(out, d);
+
+	in  += 16;
+	out += 16;
+	}
+}
+
+// OK
+void Neon_S16MonoToStereo(int16_t const* in, int32_t elements, int16_t* out)
+{
+	for (int i = 0; i < (elements / 32); ++i)
+	{
+	int16x8x4_t f = vld1q_s16_x4(in);
+
+	for (int j = 0; j < 4; ++j)
+	{
+	int16x8x2_t d;
+
+	d.val[0] = f.val[j];
+	d.val[1] = f.val[j];
+
+	vst2q_s16(out, d);
+
+	out += 16;
+	}
+
+	in  += 32;
+	}
+}
+
+// OK
+void Neon_F32CropAudio11to5(float const* in, int32_t elements, float *out)
+{
+	for (int i = 0; i < (elements / 4); ++i)
+	{
+	float32x4_t f = vld1q_f32(in);
+	switch (i % 11)
+	{
+	case 0:
+		out[0] = f.n128_f32[0];
+		out[1] = f.n128_f32[1];
+		out[2] = f.n128_f32[2];
+		out[3] = f.n128_f32[3];
+		out += 4;
+		break;
+	case 1:
+		out[0] = f.n128_f32[0];
+		out += 1;
+		break;
+	case 2:
+		out[0] = f.n128_f32[3];
+		out += 1;
+		break;
+	case 3:
+		out[0] = f.n128_f32[0];
+		out[1] = f.n128_f32[1];
+		out[2] = f.n128_f32[2];
+		out[3] = f.n128_f32[3];
+		out += 4;
+		break;
+	case 4:
+		break;
+	case 5:
+		out[0] = f.n128_f32[2];
+		out[1] = f.n128_f32[3];
+		out += 2;
+		break;
+	case 6:
+		out[0] = f.n128_f32[0];
+		out[1] = f.n128_f32[1];
+		out[2] = f.n128_f32[2];
+		out += 3;
+		break;
+	case 7:
+		break;
+	case 8:
+		out[0] = f.n128_f32[1];
+		out[1] = f.n128_f32[2];
+		out[2] = f.n128_f32[3];
+		out += 3;
+		break;
+	case 9:
+		out[0] = f.n128_f32[0];
+		out[1] = f.n128_f32[1];
+		out += 2;
+		break;
+	case 10:
+		break;
+	}
+	in += 4;
+	}
+}

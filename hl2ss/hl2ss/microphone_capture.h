@@ -6,7 +6,7 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
-#include <winrt/Windows.Media.Devices.Core.h>
+#include <winrt/Windows.Foundation.h>
 
 // OK
 class MicrophoneCapture : public winrt::implements<MicrophoneCapture, IActivateAudioInterfaceCompletionHandler>
@@ -17,14 +17,20 @@ private:
 	WAVEFORMATEX* m_wfx; // CoTaskMemFree
 	HANDLE m_eventActivate; // CloseHandle
 	HANDLE m_eventData; // CloseHandle
+	bool m_raw;
+	bool m_status;
+
+	HRESULT Configure(IActivateAudioInterfaceAsyncOperation* operation);
 
 public:
 	MicrophoneCapture();
 	~MicrophoneCapture();
 
-	bool Initialize(); // Call from the main thread
+	bool Initialize(bool raw);
+	void Activate(); // Call from the main thread
 	bool WaitActivate(DWORD milliseconds);
 	void Start();
+	bool Status();
 	void Stop();
 	void WriteSample(IMFSinkWriter* pSinkWriter, DWORD dwAudioIndex);
 
