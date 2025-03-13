@@ -63,8 +63,8 @@ if (__name__ == '__main__'):
     # Fix PV camera focus so intrinsics do not change between frames ----------
     ipc_rc = hl2ss_lnm.ipc_rc(host, hl2ss.IPCPort.REMOTE_CONFIGURATION)
     ipc_rc.open()
-    ipc_rc.wait_for_pv_subsystem(True)
-    ipc_rc.set_pv_focus(hl2ss.PV_FocusMode.Manual, hl2ss.PV_AutoFocusRange.Normal, hl2ss.PV_ManualFocusDistance.Infinity, pv_focus, hl2ss.PV_DriverFallback.Disable)
+    ipc_rc.pv_wait_for_subsystem(True)
+    ipc_rc.pv_set_focus(hl2ss.PV_FocusMode.Manual, hl2ss.PV_AutoFocusRange.Normal, hl2ss.PV_ManualFocusDistance.Infinity, pv_focus, hl2ss.PV_DriverFallback.Disable)
     ipc_rc.close()
 
     # Get camera calibrations -------------------------------------------------
@@ -112,7 +112,7 @@ if (__name__ == '__main__'):
             continue
 
         # Undistort and rectify frames ----------------------------------------
-        lf_u = cv2.remap(data_left.payload, calibration_lf.undistort_map[:, :, 0], calibration_lf.undistort_map[:, :, 1], cv2.INTER_LINEAR)
+        lf_u = cv2.remap(data_left.payload.image, calibration_lf.undistort_map[:, :, 0], calibration_lf.undistort_map[:, :, 1], cv2.INTER_LINEAR)
         lf_ru = hl2ss_3dcv.rm_vlc_rotate_image(lf_u, rotation_lf)
         rf_ru = data_right.payload.image
 

@@ -25,7 +25,7 @@ methods
             profile     = hl2ss.video_profile.H265_MAIN
             level       = hl2ss.h26x_level.DEFAULT
             bitrate     = 0
-            options     = [hl2ss.h26x_encoder_property.CODECAPI_AVEncMPVGOPSize, 30]
+            options     = [hl2ss.h26x_encoder_property.CODECAPI_AVEncMPVGOPSize, 30, hl2ss.h26x_encoder_property.HL2SSAPI_VLCHostTicksOffsetExposure, 0, hl2ss.h26x_encoder_property.HL2SSAPI_VLCHostTicksOffsetConstant, 0xFFFFFFFFFFFE17B8]
             buffer_size = 300
             module      = @hl2ss_matlab
         end
@@ -51,8 +51,8 @@ methods
         response = self.module('get_packet', self.port, hl2ss.grab_mode.BY_FRAME_INDEX, int64(index));
     end
     
-    function response = get_packet_by_timestamp(self, timestamp, preference)
-        response = self.module('get_packet', self.port, hl2ss.grab_mode.BY_TIMESTAMP, uint64(timestamp), int32(preference));
+    function response = get_packet_by_timestamp(self, timestamp, time_preference, tiebreak_right)
+        response = self.module('get_packet', self.port, hl2ss.grab_mode.BY_TIMESTAMP, uint64(timestamp), int32(time_preference), int32(tiebreak_right));
     end
     
     function close(self)

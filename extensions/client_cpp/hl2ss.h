@@ -36,7 +36,8 @@ uint16_t const SPATIAL_INPUT        = 3812;
 uint16_t const EXTENDED_EYE_TRACKER = 3817;
 uint16_t const EXTENDED_AUDIO       = 3818;
 uint16_t const EXTENDED_VIDEO       = 3819;
-};
+uint16_t const EXTENDED_DEPTH       = 3821;
+}
 
 namespace ipc_port
 {
@@ -45,20 +46,23 @@ uint16_t const SPATIAL_MAPPING      = 3813;
 uint16_t const SCENE_UNDERSTANDING  = 3814;
 uint16_t const VOICE_INPUT          = 3815;
 uint16_t const UNITY_MESSAGE_QUEUE  = 3816;
-};
+uint16_t const GUEST_MESSAGE_QUEUE  = 3820;
+}
 
 namespace chunk_size
 {
-size_t const RM_VLC               = 4096;
-size_t const RM_DEPTH_AHAT        = 4096;
-size_t const RM_DEPTH_LONGTHROW   = 4096;
-size_t const RM_IMU               = 4096;
-size_t const PERSONAL_VIDEO       = 4096;
-size_t const MICROPHONE           = 512;
-size_t const SPATIAL_INPUT        = 1024;
-size_t const EXTENDED_EYE_TRACKER = 256;
-size_t const EXTENDED_AUDIO       = 512;
-size_t const SINGLE_TRANSFER      = 4096;
+uint64_t const RM_VLC               = 4096;
+uint64_t const RM_DEPTH_AHAT        = 4096;
+uint64_t const RM_DEPTH_LONGTHROW   = 4096;
+uint64_t const RM_IMU               = 4096;
+uint64_t const PERSONAL_VIDEO       = 4096;
+uint64_t const MICROPHONE           = 512;
+uint64_t const SPATIAL_INPUT        = 1024;
+uint64_t const EXTENDED_EYE_TRACKER = 256;
+uint64_t const EXTENDED_AUDIO       = 512;
+uint64_t const EXTENDED_VIDEO       = 4096;
+uint64_t const EXTENDED_DEPTH       = 4096;
+uint64_t const SINGLE_TRANSFER      = 4096;
 }
 
 namespace stream_mode
@@ -66,7 +70,8 @@ namespace stream_mode
 uint8_t const MODE_0 = 0;
 uint8_t const MODE_1 = 1;
 uint8_t const MODE_2 = 2;
-};
+uint8_t const MODE_3 = 3;
+}
 
 namespace video_profile
 {
@@ -75,7 +80,7 @@ uint8_t const H264_MAIN = 1;
 uint8_t const H264_HIGH = 2;
 uint8_t const H265_MAIN = 3;
 uint8_t const RAW       = 0xFF;
-};
+}
 
 namespace h26x_level
 {
@@ -110,13 +115,13 @@ uint8_t const H265_6   = 180;
 uint8_t const H265_6_1 = 183;
 uint8_t const H265_6_2 = 186;
 uint8_t const DEFAULT  = 255;
-};
+}
 
 namespace depth_profile
 {
 uint8_t const SAME   = 0;
 uint8_t const ZDEPTH = 1;
-};
+}
 
 namespace audio_profile
 {
@@ -125,7 +130,7 @@ uint8_t const AAC_16000 = 1;
 uint8_t const AAC_20000 = 2;
 uint8_t const AAC_24000 = 3;
 uint8_t const RAW       = 0xFF;
-};
+}
 
 namespace aac_level
 {
@@ -139,7 +144,7 @@ uint8_t const HEV2L2  = 0x30;
 uint8_t const HEV2L3  = 0x31;
 uint8_t const HEV2L4  = 0x32;
 uint8_t const HEV2L5  = 0x33;
-};
+}
 
 namespace png_filter_mode
 {
@@ -150,7 +155,7 @@ uint8_t const UP        = 3;
 uint8_t const AVERAGE   = 4;
 uint8_t const PAETH     = 5;
 uint8_t const ADAPTIVE  = 6;
-};
+}
 
 namespace h26x_encoder_property
 {
@@ -173,21 +178,26 @@ uint64_t const CODECAPI_AVEncVideoMinQP                = 15;
 uint64_t const CODECAPI_AVLowLatencyMode               = 16;
 uint64_t const CODECAPI_AVEncVideoMaxQP                = 17;
 uint64_t const CODECAPI_VideoEncoderDisplayContentType = 18;
-};
+uint64_t const HL2SSAPI_VideoMediaIndex                = 0xFFFFFFFFFFFFFFFB;
+uint64_t const HL2SSAPI_VideoStrideMask                = 0xFFFFFFFFFFFFFFFC;
+uint64_t const HL2SSAPI_AcquisitionMode                = 0xFFFFFFFFFFFFFFFD;
+uint64_t const HL2SSAPI_VLCHostTicksOffsetConstant     = 0xFFFFFFFFFFFFFFFE;
+uint64_t const HL2SSAPI_VLCHostTicksOffsetExposure     = 0xFFFFFFFFFFFFFFFF;
+}
 
 namespace hologram_perspective
 {
 uint32_t const DISPLAY = 0;
 uint32_t const PV      = 1;
-};
+}
 
 namespace mixer_mode
 {
 uint32_t const MICROPHONE = 0;
 uint32_t const SYSTEM     = 1;
 uint32_t const BOTH       = 2;
-uint32_t const QUERY      = 0x80000000;
-};
+uint32_t const QUERY      = 3;
+}
 
 namespace pv_decoded_format
 {
@@ -196,14 +206,14 @@ uint8_t const RGB  = 1;
 uint8_t const BGRA = 2;
 uint8_t const RGBA = 3;
 uint8_t const GRAY = 4;
-};
+}
 
 namespace eet_framerate
 {
 uint8_t const FPS_30 = 30;
 uint8_t const FPS_60 = 60;
 uint8_t const FPS_90 = 90;
-};
+}
 
 namespace parameters_rm_vlc
 {
@@ -211,7 +221,7 @@ uint16_t const WIDTH  = 640;
 uint16_t const HEIGHT = 480;
 uint8_t  const FPS    = 30;
 uint32_t const PIXELS = WIDTH * HEIGHT;
-};
+}
 
 namespace parameters_rm_depth_ahat
 {
@@ -219,7 +229,7 @@ uint16_t const WIDTH  = 512;
 uint16_t const HEIGHT = 512;
 uint8_t  const FPS    = 45;
 uint32_t const PIXELS = WIDTH * HEIGHT;
-};
+}
 
 namespace parameters_rm_depth_longthrow
 {
@@ -227,22 +237,22 @@ uint16_t const WIDTH  = 320;
 uint16_t const HEIGHT = 288;
 uint8_t  const FPS    = 5;
 uint32_t const PIXELS = WIDTH * HEIGHT;
-};
+}
 
 namespace parameters_rm_imu_accelerometer
 {
 uint16_t const BATCH_SIZE = 93;
-};
+}
 
 namespace parameters_rm_imu_gyroscope
 {
 uint16_t const BATCH_SIZE = 315;
-};
+}
 
 namespace parameters_rm_imu_magnetometer
 {
 uint16_t const BATCH_SIZE = 11;
-};
+}
 
 namespace parameters_microphone
 {
@@ -257,19 +267,24 @@ uint32_t const SAMPLE_RATE    = 48000;
 uint8_t  const CHANNELS       = 2;
 uint16_t const GROUP_SIZE_RAW = 768;
 uint16_t const GROUP_SIZE_AAC = 1024;
-};
+}
 
 namespace parameters_si
 {
 uint8_t const SAMPLE_RATE = 30;
-};
+}
 
 namespace parameters_extended_audio
 {
 uint32_t const SAMPLE_RATE    = 48000;
 uint8_t  const CHANNELS       = 2;
 uint16_t const GROUP_SIZE_AAC = 1024;
-};
+}
+
+namespace time_base
+{
+uint64_t const HUNDREDS_OF_NANOSECONDS = 10000000ULL;
+}
 
 //------------------------------------------------------------------------------
 // Geometry
@@ -310,6 +325,11 @@ struct ray
     vector_3 direction;
 };
 
+struct uint64x2
+{
+    uint64_t val[2];
+};
+
 //------------------------------------------------------------------------------
 // * Client
 //------------------------------------------------------------------------------
@@ -317,7 +337,7 @@ struct ray
 class client
 {
 private:
-#ifdef WIN32
+#ifdef _WIN32
     uint64_t m_socket;
 #else
     int m_socket;
@@ -331,9 +351,9 @@ public:
     ~client();
 
     void open(char const* host, uint16_t port);
-    void sendall(void const* data, size_t count);
-    size_t recv(void* buffer, size_t count);
-    void download(void* buffer, size_t total, size_t chunk);
+    void sendall(void const* data, uint64_t count);
+    uint64_t recv(void* buffer, uint64_t count);
+    void download(void* buffer, uint64_t total, uint64_t chunk);
     void close();
 };
 
@@ -344,7 +364,7 @@ public:
 class packet
 {
 public:
-    static size_t const SZ_POSE = sizeof(matrix_4x4); 
+    static uint64_t const SZ_POSE = sizeof(matrix_4x4); 
 
     uint64_t timestamp;
     uint32_t sz_payload;
@@ -366,12 +386,12 @@ class gatherer
 {
 private:
     client m_client;
-    size_t m_chunk;
+    uint64_t m_chunk;
     uint8_t m_mode;
 
 public:
-    void open(char const* host, uint16_t port, size_t chunk, uint8_t mode);
-    void sendall(void const* data, size_t count);
+    void open(char const* host, uint16_t port, uint64_t chunk, uint8_t mode);
+    void sendall(void const* data, uint64_t count);
     std::shared_ptr<packet> get_next_packet();
     void close();
 };
@@ -385,14 +405,6 @@ uint32_t extended_audio_device_mixer_mode(uint32_t mixer_mode, uint32_t device);
 //------------------------------------------------------------------------------
 // * PV Control
 //------------------------------------------------------------------------------
-
-struct pv_intrinsics
-{
-    float fx;
-    float fy;
-    float cx;
-    float cy;
-};
 
 void start_subsystem_pv(char const* host, uint16_t port, bool enable_mrc, bool hologram_composition, bool recording_indicator, bool video_stabilization, bool blank_protected, bool show_mesh, bool shared, float global_opacity, float output_width, float output_height, uint32_t video_stabilization_length, uint32_t hologram_perspective);
 void stop_subsystem_pv(char const* host, uint16_t port);
@@ -409,12 +421,12 @@ private:
 
 protected:
     virtual void create_configuration(std::vector<uint8_t>& sc) = 0;
-    rx(char const* host, uint16_t port, size_t chunk, uint8_t mode);
+    rx(char const* host, uint16_t port, uint64_t chunk, uint8_t mode);
 
 public:
     std::string host;
     uint16_t port;
-    size_t chunk;
+    uint64_t chunk;
     uint8_t mode;
 
     virtual ~rx();
@@ -436,7 +448,7 @@ public:
     uint32_t bitrate;
     std::vector<uint64_t> options;
 
-    rx_rm_vlc(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
+    rx_rm_vlc(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
 };
 
 class rx_rm_depth_ahat : public rx
@@ -452,7 +464,7 @@ public:
     uint32_t bitrate;
     std::vector<uint64_t> options;
 
-    rx_rm_depth_ahat(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, uint8_t profile_ab, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
+    rx_rm_depth_ahat(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, uint8_t profile_ab, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
 };
 
 class rx_rm_depth_longthrow : public rx
@@ -464,7 +476,7 @@ public:
     uint8_t divisor;
     uint8_t png_filter;
 
-    rx_rm_depth_longthrow(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t png_filter);
+    rx_rm_depth_longthrow(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t png_filter);
 };
 
 class rx_rm_imu : public rx
@@ -474,7 +486,7 @@ protected:
 
 public:
 
-    rx_rm_imu(char const* host, uint16_t port, size_t chunk, uint8_t mode);
+    rx_rm_imu(char const* host, uint16_t port, uint64_t chunk, uint8_t mode);
 };
 
 class rx_pv : public rx
@@ -492,7 +504,7 @@ public:
     uint32_t bitrate;
     std::vector<uint64_t> options;
 
-    rx_pv(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint16_t width, uint16_t height, uint8_t framerate, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
+    rx_pv(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint16_t width, uint16_t height, uint8_t framerate, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
 };
 
 class rx_microphone : public rx
@@ -504,7 +516,7 @@ public:
     uint8_t profile;
     uint8_t level;
 
-    rx_microphone(char const* host, uint16_t port, size_t chunk, uint8_t profile, uint8_t level);
+    rx_microphone(char const* host, uint16_t port, uint64_t chunk, uint8_t profile, uint8_t level);
 };
 
 class rx_si : public rx
@@ -514,7 +526,7 @@ protected:
 
 public:
 
-    rx_si(char const* host, uint16_t port, size_t chunk);
+    rx_si(char const* host, uint16_t port, uint64_t chunk);
 };
 
 class rx_eet : public rx
@@ -525,7 +537,7 @@ protected:
 public:
     uint8_t framerate;
 
-    rx_eet(char const* host, uint16_t port, size_t chunk, uint8_t framerate);
+    rx_eet(char const* host, uint16_t port, uint64_t chunk, uint8_t framerate);
 };
 
 class rx_extended_audio : public rx
@@ -540,7 +552,20 @@ public:
     uint8_t profile;
     uint8_t level;
 
-    rx_extended_audio(char const* host, uint16_t port, size_t chunk, uint32_t mixer_mode, float loopback_gain, float microphone_gain, uint8_t profile, uint8_t level);
+    rx_extended_audio(char const* host, uint16_t port, uint64_t chunk, uint32_t mixer_mode, float loopback_gain, float microphone_gain, uint8_t profile, uint8_t level);
+};
+
+class rx_extended_depth : public rx
+{
+protected:
+    void create_configuration(std::vector<uint8_t>& sc) override;
+
+public:
+    uint8_t divisor;
+    uint8_t profile_z;
+    std::vector<uint64_t> options;
+
+    rx_extended_depth(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, std::vector<uint64_t> const& options);
 };
 
 //------------------------------------------------------------------------------
@@ -583,6 +608,50 @@ public:
 // * Decoders
 //------------------------------------------------------------------------------
 
+void trim_plane(uint8_t* dst, uint8_t const* src, uint16_t height, uint16_t width, uint16_t stride);
+void collect_i420(uint8_t* dst, int width, int height, uint8_t* data[8], int linesize[8]);
+void collect_nv12(uint8_t* dst, uint16_t width, uint16_t height, uint8_t const* src, uint16_t stride);
+
+struct rm_vlc_metadata
+{
+    uint64_t sensor_ticks;
+    uint64_t exposure;
+    uint32_t gain;
+    uint32_t _reserved;
+};
+
+struct rm_depth_ahat_metadata
+{
+    uint64_t sensor_ticks;
+};
+
+struct rm_depth_longthrow_metadata
+{
+    uint64_t sensor_ticks;
+};
+
+struct pv_metadata
+{
+    vector_2 f;
+    vector_2 c;
+    uint64_t exposure_time;
+    uint64x2 exposure_compensation;
+    uint32_t lens_position;
+    uint32_t focus_state;
+    uint32_t iso_speed;
+    uint32_t white_balance;
+    vector_2 iso_gains;
+    vector_3 white_balance_gains;
+    uint16_t width;
+    uint16_t height;
+};
+
+struct extended_depth_metadata
+{
+    uint16_t width;
+    uint16_t height;
+};
+
 class decoder_rm_vlc
 {
 private:
@@ -591,6 +660,7 @@ private:
     
 public:
     static uint32_t const DECODED_SIZE = parameters_rm_vlc::PIXELS * sizeof(uint8_t);
+    static uint32_t const METADATA_SIZE = sizeof(rm_vlc_metadata);
 
     void open(uint8_t profile);
     std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size);
@@ -609,6 +679,7 @@ private:
 
 public:
     static uint32_t const DECODED_SIZE = 2 * parameters_rm_depth_ahat::PIXELS * sizeof(uint16_t);
+    static uint32_t const METADATA_SIZE = sizeof(rm_depth_ahat_metadata);
 
     void open(uint8_t profile_z, uint8_t profile_ab);
     std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size);
@@ -619,6 +690,7 @@ class decoder_rm_depth_longthrow
 {
 public:
     static uint32_t const DECODED_SIZE = 2 * parameters_rm_depth_longthrow::PIXELS * sizeof(uint16_t);
+    static uint32_t const METADATA_SIZE = sizeof(rm_depth_longthrow_metadata);
 
     void open();
     std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size);
@@ -634,14 +706,18 @@ private:
     uint8_t m_profile;
 
 public:
-    static uint32_t const K_SIZE = sizeof(pv_intrinsics);
+    static uint32_t const METADATA_SIZE = sizeof(pv_metadata);
 
     static uint8_t decoded_bpp(uint8_t decoded_format);
+    static int decoded_cv_type(uint8_t decoded_format);
+    static int decoded_cv_i420(uint8_t decoded_format);
+    static int decoded_cv_nv12(uint8_t decoded_format);
+
     static void resolution(uint32_t bytes, uint16_t& width, uint16_t& height, uint16_t& stride);
     static void resolution_decoded(uint32_t payload_size, uint8_t decoded_format, uint16_t& width, uint16_t& height, uint8_t& channels);
 
     void open(uint16_t width, uint16_t height, uint8_t profile);
-    std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size, uint8_t decoded_format, uint32_t& decoded_size);
+    std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size, uint8_t decoded_format, uint32_t& decoded_size, uint16_t& width, uint16_t& height);
     void close();
 };
 
@@ -659,6 +735,22 @@ public:
     void close();
 };
 
+class decoder_extended_depth
+{
+private:
+#ifdef HL2SS_ENABLE_ZDEPTH
+    zdepth::DepthCompressor m_zdc;
+#endif
+    uint8_t m_profile_z;
+
+public:
+    static uint32_t const METADATA_SIZE = sizeof(extended_depth_metadata);
+
+    void open(uint8_t profile_z);
+    std::unique_ptr<uint8_t[]> decode(uint8_t* data, uint32_t size, uint32_t& decoded_size, uint16_t& width, uint16_t& height);
+    void close();
+};
+
 //------------------------------------------------------------------------------
 // * Modes 0, 1 Data Acquisition (Decoded)
 //------------------------------------------------------------------------------
@@ -669,7 +761,7 @@ protected:
     decoder_rm_vlc m_decoder;
 
 public:
-    rx_decoded_rm_vlc(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
+    rx_decoded_rm_vlc(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
     
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -682,7 +774,7 @@ protected:
     decoder_rm_depth_ahat m_decoder;
 
 public:
-    rx_decoded_rm_depth_ahat(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, uint8_t profile_ab, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
+    rx_decoded_rm_depth_ahat(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, uint8_t profile_ab, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options);
 
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -695,7 +787,7 @@ protected:
     decoder_rm_depth_longthrow m_decoder;
 
 public:
-    rx_decoded_rm_depth_longthrow(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint8_t divisor, uint8_t png_filter);
+    rx_decoded_rm_depth_longthrow(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t png_filter);
     
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -710,7 +802,7 @@ protected:
 public:
     uint8_t decoded_format;
 
-    rx_decoded_pv(char const* host, uint16_t port, size_t chunk, uint8_t mode, uint16_t width, uint16_t height, uint8_t framerate, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options, uint8_t decoded_format);
+    rx_decoded_pv(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint16_t width, uint16_t height, uint8_t framerate, uint8_t divisor, uint8_t profile, uint8_t level, uint32_t bitrate, std::vector<uint64_t> const& options, uint8_t decoded_format);
 
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -723,7 +815,7 @@ protected:
     decoder_microphone m_decoder;
 
 public:
-    rx_decoded_microphone(char const* host, uint16_t port, size_t chunk, uint8_t profile, uint8_t level);
+    rx_decoded_microphone(char const* host, uint16_t port, uint64_t chunk, uint8_t profile, uint8_t level);
 
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -736,7 +828,23 @@ protected:
     decoder_microphone m_decoder;
 
 public:
-    rx_decoded_extended_audio(char const* host, uint16_t port, size_t chunk, uint32_t mixer_mode, float loopback_gain, float microphone_gain, uint8_t profile, uint8_t level);
+    rx_decoded_extended_audio(char const* host, uint16_t port, uint64_t chunk, uint32_t mixer_mode, float loopback_gain, float microphone_gain, uint8_t profile, uint8_t level);
+
+    void open() override;
+    std::shared_ptr<packet> get_next_packet() override;
+    void close() override;
+};
+
+class rx_decoded_extended_depth : public rx_extended_depth
+{
+protected:
+    decoder_extended_depth m_decoder;
+
+public:
+    uint16_t width;
+    uint16_t height;
+
+    rx_decoded_extended_depth(char const* host, uint16_t port, uint64_t chunk, uint8_t mode, uint8_t divisor, uint8_t profile_z, std::vector<uint64_t> const& options);
 
     void open() override;
     std::shared_ptr<packet> get_next_packet() override;
@@ -787,6 +895,8 @@ struct calibration_pv
     float tangential_distortion[2];
     float projection[4][4];
     float extrinsics[4][4];
+    float intrinsics_mf[4];
+    float extrinsics_mf[7];
 };
 
 std::shared_ptr<calibration_rm_vlc> download_calibration_rm_vlc(char const* host, uint16_t port);
@@ -794,6 +904,8 @@ std::shared_ptr<calibration_rm_depth_ahat> download_calibration_rm_depth_ahat(ch
 std::shared_ptr<calibration_rm_depth_longthrow> download_calibration_rm_depth_longthrow(char const* host, uint16_t port);
 std::shared_ptr<calibration_rm_imu> download_calibration_rm_imu(char const* host, uint16_t port);
 std::shared_ptr<calibration_pv> download_calibration_pv(char const* host, uint16_t port, uint16_t width, uint16_t height, uint8_t framerate);
+std::shared_ptr<std::vector<uint8_t>> download_devicelist_extended_audio(char const* host, uint16_t port);
+std::shared_ptr<std::vector<uint8_t>> download_devicelist_extended_video(char const* host, uint16_t port);
 
 //------------------------------------------------------------------------------
 // * Port Information
@@ -830,7 +942,7 @@ namespace hs_marker_state
 {
 uint32_t const Disable = 0;
 uint32_t const Enable  = 1;
-};
+}
 
 namespace pv_focus_mode
 {
@@ -838,38 +950,38 @@ uint32_t const Auto       = 0;
 uint32_t const Single     = 1;
 uint32_t const Continuous = 2;
 uint32_t const Manual     = 3;
-};
+}
 
 namespace pv_auto_focus_range
 {
 uint32_t const FullRange = 0;
 uint32_t const Macro     = 1;
 uint32_t const Normal    = 2;
-};
+}
 
 namespace pv_manual_focus_distance
 {
 uint32_t const Infinity = 0;
 uint32_t const Nearest  = 2;
-};
+}
 
 namespace pv_focus_value
 {
 uint32_t const Min =   170;
 uint32_t const Max = 10000;
-};
+}
 
 namespace pv_driver_fallback
 {
 uint32_t const Enable  = 0;
 uint32_t const Disable = 1;
-};
+}
 
 namespace pv_video_temporal_denoising_mode
 {
 uint32_t const Off = 0;
 uint32_t const On  = 1;
-};
+}
 
 namespace pv_color_temperature_preset
 {
@@ -881,43 +993,49 @@ uint32_t const Flash       = 4;
 uint32_t const Fluorescent = 5;
 uint32_t const Tungsten    = 6;
 uint32_t const Candlelight = 7;
-};
+}
 
 namespace pv_white_balance_value
 {
 uint32_t const Min = 2300; // 25
 uint32_t const Max = 7500; // 25
-};
+}
 
 namespace pv_exposure_mode
 {
 uint32_t const Manual = 0;
 uint32_t const Auto   = 1;
-};   
+}
 
 namespace pv_exposure_value
 {
 uint32_t const Min =   1000; // 10
 uint32_t const Max = 660000; // 10
-};
+}
 
 namespace pv_exposure_priority_video
 {
 uint32_t const Disabled = 0;
 uint32_t const Enabled  = 1;
-};
+}
 
 namespace pv_iso_speed_mode
 {
 uint32_t const Manual = 0;
 uint32_t const Auto   = 1;
-};
+}
 
 namespace pv_iso_speed_value
 {
 uint32_t const Min =  100;
 uint32_t const Max = 3200;
-};
+}
+
+namespace pv_backlight_compensation_state
+{
+uint32_t const Disable = 0;
+uint32_t const Enable  = 1;
+}
 
 namespace pv_capture_scene_mode
 {
@@ -933,13 +1051,53 @@ uint32_t const Candlelight   =  9;
 uint32_t const Landscape     = 10;
 uint32_t const NightPortrait = 11;
 uint32_t const Backlit       = 12;
-};
+}
 
-namespace pv_backlight_compensation_state
+namespace pv_media_capture_optimization
 {
-uint32_t const Disable = 0;
-uint32_t const Enable  = 1;
-};
+uint32_t const Default            = 0;
+uint32_t const Quality            = 1;
+uint32_t const Latency            = 2;
+uint32_t const Power              = 3;
+uint32_t const LatencyThenQuality = 4;
+uint32_t const LatencyThenPower   = 5;
+uint32_t const PowerAndQuality    = 6;
+}
+
+namespace pv_capture_use
+{
+uint32_t const NotSet = 0;
+uint32_t const Photo  = 1;
+uint32_t const Video  = 2;
+}
+
+namespace pv_optical_image_stabilization_mode
+{
+uint32_t const Off = 0;
+uint32_t const On  = 1;
+}
+
+namespace pv_hdr_video_mode
+{
+uint32_t const Off  = 0;
+uint32_t const On   = 1;
+uint32_t const Auto = 2;
+}
+
+namespace pv_region_of_interest_type
+{
+uint32_t const Unknown = 0;
+uint32_t const Face    = 1;
+}
+
+namespace interface_priority
+{
+int32_t const LOWEST       = -2;
+int32_t const BELOW_NORMAL = -1;
+int32_t const NORMAL       = 0;
+int32_t const ABOVE_NORMAL = 1;
+int32_t const HIGHEST      = 2;
+}
 
 struct version
 {
@@ -952,13 +1110,13 @@ protected:
     std::vector<uint8_t> m_sc;
 
     void send(uint8_t command, std::initializer_list<uint32_t> list);
-    void recv(void* buffer, size_t size);
+    void recv(void* buffer, uint64_t size);
 
 public:
     ipc_rc(char const* host, uint16_t port);
 
     version get_application_version();
-    uint64_t get_utc_offset(uint32_t samples);
+    uint64_t get_utc_offset();
     void set_hs_marker_state(uint32_t state);
     bool get_pv_subsystem_status();
     void wait_for_pv_subsystem(bool status);
@@ -972,6 +1130,14 @@ public:
     void set_pv_backlight_compensation(uint32_t state);
     void set_pv_scene_mode(uint32_t mode);
     void set_flat_mode(uint32_t mode);
+    void set_rm_eye_selection(uint32_t enable);
+    void set_pv_desired_optimization(uint32_t mode);
+    void set_pv_primary_use(uint32_t mode);
+    void set_pv_optical_image_stabilization(uint32_t mode);
+    void set_pv_hdr_video(uint32_t mode);
+    void set_pv_regions_of_interest(bool clear, bool set, bool auto_exposure, bool auto_focus, bool bounds_normalized, uint32_t type, uint32_t weight, float x, float y, float w, float h);
+    void set_interface_priority(uint16_t port, int32_t priority);
+    void set_quiet_mode(uint32_t mode);
 };
 
 //------------------------------------------------------------------------------
@@ -982,19 +1148,19 @@ namespace sm_vertex_position_format
 {
 uint32_t const R32G32B32A32Float         =  2;
 uint32_t const R16G16B16A16IntNormalized = 13;
-};
+}
 
 namespace sm_triangle_index_format
 {
 uint32_t const R16UInt = 57;
 uint32_t const R32Uint = 42;
-};
+}
 
 namespace sm_vertex_normal_format
 {
 uint32_t const R32G32B32A32Float     =  2;
 uint32_t const R8G8B8A8IntNormalized = 31;
-};
+}
 
 namespace sm_volume_type
 {
@@ -1002,23 +1168,56 @@ uint32_t const Box         = 0;
 uint32_t const Frustum     = 1;
 uint32_t const OrientedBox = 2;
 uint32_t const Sphere      = 3;
+}
+
+struct sm_box
+{
+    vector_3 center;
+    vector_3 extents;
+};
+
+struct sm_frustum
+{
+    plane p_near;
+    plane p_far;
+    plane p_right;
+    plane p_left;
+    plane p_top;
+    plane p_bottom;
+};
+
+struct sm_oriented_box
+{
+    vector_3 center;
+    vector_3 extents;
+    quaternion orientation;
+};
+
+struct sm_sphere
+{
+    vector_3 center;
+    float radius;
 };
 
 class sm_bounding_volume
 {
-    friend class ipc_sm;
-
 private:
     std::vector<uint8_t> m_data;
     uint32_t m_count;
 
 public:
     sm_bounding_volume();
+    sm_bounding_volume(uint32_t count, uint8_t const* data, uint64_t size);
 
-    void add_box(vector_3 center, vector_3 extents);
-    void add_frustum(plane p_near, plane p_far, plane p_right, plane p_left, plane p_top, plane p_bottom);
-    void add_oriented_box(vector_3 center, vector_3 extents, quaternion orientation);
-    void add_sphere(vector_3 center, float radius);
+    void clear();
+    void add_box(sm_box box);
+    void add_frustum(sm_frustum frustum);
+    void add_oriented_box(sm_oriented_box oriented_box);
+    void add_sphere(sm_sphere sphere);
+
+    uint32_t get_count() const;
+    uint8_t const* get_data() const;
+    uint64_t get_size() const;
 };
 
 struct guid
@@ -1035,16 +1234,20 @@ struct sm_surface_info
 
 class sm_mesh_task
 {
-    friend class ipc_sm;
-
 private:
     std::vector<uint8_t> m_data;
     uint32_t m_count;
     
 public:
     sm_mesh_task();
+    sm_mesh_task(uint32_t count, uint8_t const* data, uint64_t size);
 
-    void add_task(guid id, double max_triangles_per_cubic_meter, uint32_t vertex_position_format, uint32_t triangle_index_format, uint32_t vertex_normal_format, bool include_vertex_normals, bool include_bounds);
+    void clear();
+    void add_task(guid id, double max_triangles_per_cubic_meter, uint32_t vertex_position_format, uint32_t triangle_index_format, uint32_t vertex_normal_format);
+
+    uint32_t get_count() const;
+    uint8_t const* get_data() const;
+    uint64_t get_size() const;
 };
 
 struct sm_mesh
@@ -1063,10 +1266,9 @@ class ipc_sm : public ipc
 public:
     ipc_sm(char const* host, uint16_t port);
 
-    void create_observer();
     void set_volumes(sm_bounding_volume const& volumes);
     void get_observed_surfaces(std::vector<sm_surface_info>& surfaces);
-    void get_meshes(sm_mesh_task const& tasks, uint32_t threads, std::vector<sm_mesh>& meshes);
+    void get_meshes(sm_mesh_task const& tasks, std::vector<sm_mesh>& meshes);
 };
 
 //------------------------------------------------------------------------------
@@ -1079,7 +1281,7 @@ uint32_t const Coarse    =   0;
 uint32_t const Medium    =   1;
 uint32_t const Fine      =   2;
 uint32_t const Unlimited = 255;
-};
+}
 
 namespace su_kind_flag
 {
@@ -1091,13 +1293,13 @@ uint8_t const Platform           =  16;
 uint8_t const Unknown            =  32;
 uint8_t const World              =  64;
 uint8_t const CompletelyInferred = 128;
-};
+}
 
 namespace su_create
 {
 uint8_t const New             = 0;
 uint8_t const NewFromPrevious = 1;
-};
+}
 
 namespace su_kind
 {
@@ -1109,7 +1311,7 @@ int32_t const Platform           =   4;
 int32_t const Unknown            = 247;
 int32_t const World              = 248;
 int32_t const CompletelyInferred = 249;
-};
+}
 
 struct su_mesh
 {
@@ -1178,7 +1380,7 @@ uint32_t const High     = 0;
 uint32_t const Medium   = 1;
 uint32_t const Low      = 2;
 uint32_t const Rejected = 3;
-};
+}
 
 struct vi_result
 {
@@ -1194,11 +1396,8 @@ class ipc_vi : public ipc
 public:
     ipc_vi(char const* host, uint16_t port);
 
-    void create_recognizer();
-    bool register_commands(bool clear, std::vector<std::u16string> const& strings);
-    void start();
+    void start(std::vector<std::u16string> const& strings);
     void pop(std::vector<vi_result>& results);
-    void clear();
     void stop();
 };
 
@@ -1214,12 +1413,14 @@ private:
 
 public:
     umq_command_buffer();
+    umq_command_buffer(uint32_t count, uint8_t const* data, uint64_t size);
 
-    void add(uint32_t id, void const* data, size_t size);
     void clear();
-    uint8_t const* data();
-    size_t size();
-    uint32_t count();
+    void add(uint32_t id, void const* data, uint64_t size);
+    
+    uint32_t get_count();
+    uint8_t const* get_data();
+    uint64_t get_size();    
 };
 
 class ipc_umq : public ipc
@@ -1227,8 +1428,28 @@ class ipc_umq : public ipc
 public:
     ipc_umq(char const* host, uint16_t port);
 
-    void push(uint8_t const* data, size_t size);
+    void push(uint8_t const* data, uint64_t size);
     void pull(uint32_t* data, uint32_t count);
+};
+
+//------------------------------------------------------------------------------
+// * Guest Message Queue
+//------------------------------------------------------------------------------
+
+struct gmq_message
+{
+    uint32_t command;
+    uint32_t size;
+    std::unique_ptr<uint8_t[]> data;
+};
+
+class ipc_gmq : public ipc
+{
+public:
+    ipc_gmq(char const* host, uint16_t port);
+
+    void pull(gmq_message& message);
+    void push(uint32_t const* response, uint32_t count);
 };
 
 //------------------------------------------------------------------------------
@@ -1245,13 +1466,22 @@ struct rm_imu_sample
     float temperature;
 };
 
+namespace pv_focus_state
+{
+uint32_t const UNINITIALIZED = 0;
+uint32_t const LOST          = 1;
+uint32_t const SEARCHING     = 2;
+uint32_t const FOCUSED       = 3;
+uint32_t const FAILED        = 4;
+}
+
 namespace si_valid
 {
 uint32_t const HEAD  = 0x01;
 uint32_t const EYE   = 0x02;
 uint32_t const LEFT  = 0x04;
 uint32_t const RIGHT = 0x08;
-};
+}
 
 struct si_head_pose
 {
@@ -1317,7 +1547,7 @@ uint32_t const RIGHT_RAY         = 0x08;
 uint32_t const LEFT_OPENNESS     = 0x10;
 uint32_t const RIGHT_OPENNESS    = 0x20;
 uint32_t const VERGENCE_DISTANCE = 0x40;
-};
+}
 
 struct eet_frame
 {
@@ -1331,15 +1561,89 @@ struct eet_frame
     uint32_t valid;
 };
 
-void unpack_rm_vlc(uint8_t* payload, uint8_t** image);
-void unpack_rm_depth_ahat(uint8_t* payload, uint16_t** depth, uint16_t** ab);
-void unpack_rm_depth_longthrow(uint8_t* payload, uint16_t** depth, uint16_t** ab);
-void unpack_rm_imu(uint8_t* payload, rm_imu_sample** samples);
-void unpack_pv(uint8_t* payload, size_t size, uint8_t** image, pv_intrinsics** intrinsics);
-void unpack_microphone_raw(uint8_t* payload, int16_t** samples);
-void unpack_microphone_aac(uint8_t* payload, float** samples);
-void unpack_si(uint8_t* payload, si_frame** si);
-void unpack_eet(uint8_t* payload, eet_frame** eet);
-void unpack_extended_audio_raw(uint8_t* payload, int16_t** samples);
-void unpack_extended_audio_aac(uint8_t* payload, float** samples);
+struct map_rm_vlc
+{
+    uint8_t* image;
+    rm_vlc_metadata* metadata;
+};
+
+struct map_rm_depth_ahat
+{
+    uint16_t* depth;
+    uint16_t* ab;
+    rm_depth_ahat_metadata* metadata;
+};
+
+struct map_rm_depth_longthrow
+{
+    uint16_t* depth;
+    uint16_t* ab;
+    rm_depth_longthrow_metadata* metadata;
+};
+
+struct map_rm_imu
+{
+    hl2ss::rm_imu_sample* samples;
+};
+
+struct map_pv
+{
+    uint8_t* image;
+    pv_metadata* metadata;
+};
+
+struct map_microphone_raw
+{
+    int16_t* samples;
+};
+
+struct map_microphone_aac
+{
+    float* samples;
+};
+
+struct map_microphone_array
+{
+    float* samples;
+};
+
+struct map_si
+{
+    hl2ss::si_frame* tracking;
+};
+
+struct map_eet
+{
+    hl2ss::eet_frame* tracking;
+};
+
+struct map_extended_audio_raw
+{
+    int16_t* samples;
+};
+
+struct map_extended_audio_aac
+{
+    float* samples;
+};
+
+struct map_extended_depth
+{
+    uint16_t* depth;
+    extended_depth_metadata* metadata;
+};
+
+map_rm_vlc unpack_rm_vlc(uint8_t* payload);
+map_rm_depth_ahat unpack_rm_depth_ahat(uint8_t* payload);
+map_rm_depth_longthrow unpack_rm_depth_longthrow(uint8_t* payload);
+map_rm_imu unpack_rm_imu(uint8_t* payload);
+map_pv unpack_pv(uint8_t* payload, uint32_t size);
+map_microphone_raw unpack_microphone_raw(uint8_t* payload);
+map_microphone_aac unpack_microphone_aac(uint8_t* payload);
+map_microphone_array unpack_microphone_array(uint8_t* payload);
+map_si unpack_si(uint8_t* payload);
+map_eet unpack_eet(uint8_t* payload);
+map_extended_audio_raw unpack_extended_audio_raw(uint8_t* payload);
+map_extended_audio_aac unpack_extended_audio_aac(uint8_t* payload);
+map_extended_depth unpack_extended_depth(uint8_t* payload, uint32_t size);
 }
